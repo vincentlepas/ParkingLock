@@ -91,15 +91,54 @@ class Pawl:
         
 
     
-#class Gear:
-#    def __init__(self, teeth_number, pitch_diameter, point_o, external_diameter, internal_diameter):
-#        self.teeth_number = teeth_number
-#        self.pitch_diameter = pitch_diameter
-#        self.point_o = point_o
-#        
-#    def Geometry(self):
-#        pointO = vm.Point2D(self.point_o)
-#        
+class Gear:
+    
+    def __init__(self,Ox,Oy,Z,DI,DF,L8,L9,theta1,theta2,theta3,alphaJ,alphaR):
+        self.Ox = Ox
+        self.Oy = Oy
+        self.Z = Z
+        self.DI = DI
+        self.DF = DF
+        self.L8 = L8
+        self.L9 = L9 #Distance JK
+        self.theta1 = theta1
+        self.theta2 = theta2 
+        self.theta3 = theta3 #(theta2+theta3)=(2*npy.pi/Z) ?
+        self.alphaJ = alphaJ
+        self.aplhaR = alphaR
+        
+        
+        
+       
+    def Geometry(self):
+        theta = 2*npy.pi/Z #theta=theta2 +theta3
+        
+        R = O.Translation(vm.point2D((self.L8*npy.cos(alphaR),-self.L8*npy.sin(alphaR))))
+        
+        K = R.Translation(vm.point2D((0,DF/2)))
+        H = K.Rotation(R,theta2)
+        M = K.Rotation(R,theta2+theta3)
+        a1 = vm.Arc2D(K,H,M)
+        
+        J1 = R.Translation(vm.Point2D((0,DI/2)))
+        J=J1.Rotation(R,(theta2-theta1)/2)
+        #est ce un probleme de ne pas controler directement la pente du créneau ? (on ne se sert pas de alphaJ)
+        #sinon on pourrait remplacer les deux lignes précédentes par:J=K.Translation(vm.point2D((-self.L9*npy.sin(alphaJ),-self.L9*npy.cos(alphaJ))))
+        #Dans ce cas il faudrait peut être paramétrer K de la même façon
+        I=J.Rotation(R,theta1)
+        
+        l1=primitives2D.RoundedLineSegments2D([K,J,I,H],{'''je ne sais pas trop quoi mettre ici'''})
+        
+        L=[a1,l1]
+        for i in range(Z-1):
+            thetar=(i+1)*theta
+            L.append(a1.Rotation(R,thetar,True))
+            L.append(l1.Rotation(R,thetar,True))
+
+        c1=vm.Contour2D(L)
+        c1.MPLPlot()
+        
+        
 #class ParlinkLock:
 #    def __init__(self, pawl, point_a, alpha, gear, point_o, betha):
 #        self.pawl = pawl
