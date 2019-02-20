@@ -124,7 +124,7 @@ class Gear:
         J=J1.Rotation(R,(theta2-theta1)/2)
         #est ce un probleme de ne pas controler directement la pente du créneau ? (on ne se sert pas de alphaJ)
         #sinon on pourrait remplacer les deux lignes précédentes par:J=K.Translation(vm.point2D((-self.L9*npy.sin(alphaJ),-self.L9*npy.cos(alphaJ))))
-        #Dans ce cas il faudrait peut être paramétrer K de la même façon
+        #Dans ce cas il faudrait peut être paramétrer H de la même façon
         I=J.Rotation(R,theta1)
         
         l1=primitives2D.RoundedLineSegments2D([K,J,I,H],{'''je ne sais pas trop quoi mettre ici'''})
@@ -152,6 +152,5 @@ P1.Geometry()
 
 #G1 = Gear(teeth_number = 12, pitch_diameter = 0.07, point_o = [0, 0], 
 #          external_diameter = 0.08, internal_diameter = 0.06)
-#P1.Geometry()
-#
+
 #PL1 = ParlinkLock(pawl = P1, point_a = [0, 1], alpha = 0.2, gear = G1, point_o = [0, 0], betha = 0)
